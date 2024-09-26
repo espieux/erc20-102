@@ -15,32 +15,55 @@ async function main() {
     const provider = new ethers.providers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
     const wallet = new ethers.Wallet(process.env.SEPOLIA_PRIVATE_KEY, provider);
 
-    // Addresses for ERC20 contracts
-    const teacherERC20Address = "0xD829b447AbABDb689C1F6DC81CCe3d29b37c5992"; 
-    const exerciseSolutionTokenAddress = "0x140A07834C61971d4eC24861c8B4eB0c142c95aa"; 
+    // Paths for ABI and bytecode files
+    const exerciseSolutionTokenPath = path.join(__dirname, "../artifacts/contracts/ExerciseSolutionToken.sol/ExerciseSolutionToken.json");
+    const exerciseSolutionPath = path.join(__dirname, "../artifacts/contracts/ExerciseSolution.sol/ExerciseSolution.json");
+
+    // Load ABI and bytecode for ExerciseSolutionToken
+    const exerciseSolutionTokenJSON = JSON.parse(fs.readFileSync(exerciseSolutionTokenPath, "utf-8"));
+    const exerciseSolutionTokenABI = exerciseSolutionTokenJSON.abi;
+    const exerciseSolutionTokenBytecode = exerciseSolutionTokenJSON.bytecode;
 
     // Load ABI and bytecode for ExerciseSolution
-    const contractPath = path.join(__dirname, "../artifacts/contracts/ExerciseSolution.sol/ExerciseSolution.json");
-    const contractJSON = JSON.parse(fs.readFileSync(contractPath, "utf-8"));
+    const exerciseSolutionJSON = JSON.parse(fs.readFileSync(exerciseSolutionPath, "utf-8"));
+    const exerciseSolutionABI = exerciseSolutionJSON.abi;
+    const exerciseSolutionBytecode = exerciseSolutionJSON.bytecode;
 
-    const exerciseSolutionABI = contractJSON.abi;
-    const exerciseSolutionBytecode = contractJSON.bytecode;
+    // Deploy ExerciseSolutionToken
+    console.log("Deploying ExerciseSolutionToken...");
+    const exerciseSolutionTokenFactory = new ethers.ContractFactory(
+        exerciseSolutionTokenABI,
+        exerciseSolutionTokenBytecode,
+        wallet
+    );
+    const exerciseSolutionTokenContract = await exerciseSolutionTokenFactory.deploy("SolutionToken", "SLT");
+    await exerciseSolutionTokenContract.deployed();
+    console.log(`ExerciseSolutionToken deployed to: ${exerciseSolutionTokenContract.address}`);
 
-    // Create a ContractFactory for deployment
+    // Addresses for ERC20 contracts
+    const teacherERC20Address = "0xD829b447AbABDb689C1F6DC81CCe3d29b37c5992";
+    const exerciseSolutionTokenAddress = exerciseSolutionTokenContract.address;
+
+    // Deploy ExerciseSolution
+    console.log("Deploying ExerciseSolution...");
     const exerciseSolutionFactory = new ethers.ContractFactory(
         exerciseSolutionABI,
         exerciseSolutionBytecode,
         wallet
     );
-
-    // Deploy the ExerciseSolution contract
-    console.log("Deploying ExerciseSolution...");
     const exerciseSolutionContract = await exerciseSolutionFactory.deploy(teacherERC20Address, exerciseSolutionTokenAddress);
-
-    // Wait for deployment to complete
     await exerciseSolutionContract.deployed();
-
     console.log(`ExerciseSolution deployed to: ${exerciseSolutionContract.address}`);
+
+    // Grant ExerciseSolution contract the minter role
+    console.log("Granting minting rights to ExerciseSolution...");
+    const setMinterTx = await exerciseSolutionTokenContract.setMinter(exerciseSolutionContract.address, true);
+    await setMinterTx.wait();
+    console.log("Minting rights granted to ExerciseSolution!");
+
+    console.log(`Deployment completed successfully!`);
+    console.log(`ExerciseSolutionToken: ${exerciseSolutionTokenContract.address}`);
+    console.log(`ExerciseSolution: ${exerciseSolutionContract.address}`);
 }
 
 main()

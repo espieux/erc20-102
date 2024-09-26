@@ -36,11 +36,11 @@ contract ExerciseSolution is IExerciseSolution {
         // Transfer tokens from the user to this contract
         require(teacherERC20.transferFrom(msg.sender, address(this), amountToDeposit), "Transfer failed");
 
-        // Track the deposited amount in custody
-        userTokensInCustody[msg.sender] += amountToDeposit;
-
         // Mint corresponding deposit tokens to the user
         depositToken.mint(msg.sender, amountToDeposit);
+
+        // Track the deposited amount in custody
+        userTokensInCustody[msg.sender] += amountToDeposit;
 
         return amountToDeposit;
     }
@@ -49,11 +49,8 @@ contract ExerciseSolution is IExerciseSolution {
     function withdrawTokens(uint256 amountToWithdraw) external override returns (uint256) {
         require(userTokensInCustody[msg.sender] >= amountToWithdraw, "Not enough tokens in custody");
 
-        // Transfer the deposit tokens from the user to this contract
-        require(depositToken.transferFrom(msg.sender, address(this), amountToWithdraw), "Transfer of deposit tokens failed");
-
-        // Cast depositToken to ExerciseSolutionToken to access the burn function
-        ExerciseSolutionToken(address(depositToken)).burn(address(this), amountToWithdraw);
+        // Burn the user's deposit tokens
+        ExerciseSolutionToken(address(depositToken)).burn(msg.sender, amountToWithdraw);
 
         // Update the tokens in custody for the caller
         userTokensInCustody[msg.sender] -= amountToWithdraw;

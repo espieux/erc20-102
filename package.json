@@ -1,0 +1,22 @@
+{
+  "name": "erc20-101",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "description": "",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.11",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "hardhat": "^2.22.11"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "4.4.0",
+    "dotenv": "^16.4.5",
+    "ethers": "5.7.2"
+  }
+}

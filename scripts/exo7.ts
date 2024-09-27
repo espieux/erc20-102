@@ -8,16 +8,16 @@ const evaluatorABI = require('../artifacts/contracts/Evaluator.sol/Evaluator.jso
 
 async function main() {
     // Ensure environment variables are loaded
-    if (!process.env.SEPOLIA_RPC_URL || !process.env.SEPOLIA_PRIVATE_KEY) {
-        throw new Error("Please set your .env variables (SEPOLIA_RPC_URL, SEPOLIA_PRIVATE_KEY)");
+    if (!process.env.ARB_SEPOLIA_URL || !process.env.PRIVATE_KEY) {
+        throw new Error("Please set your .env variables (ARB_SEPOLIA_URL, PRIVATE_KEY)");
     }
 
     // Set up provider and wallet
-    const provider: ethers.providers.JsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-    const wallet: ethers.Wallet = new ethers.Wallet(process.env.SEPOLIA_PRIVATE_KEY, provider);
+    const provider: ethers.providers.JsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.ARB_SEPOLIA_URL);
+    const wallet: ethers.Wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // Evaluator contract address
-    const evaluatorContractAddress = "0x822aF04084720Ade89E34e316c169435bBA9C886"; // Replace with actual address
+    const evaluatorContractAddress = "0xD05c425C843c327c90D2Db98Aba9B715BAA51736"; // Replace with actual address
 
     // Initialize evaluator contract
     const evaluatorContract = new ethers.Contract(evaluatorContractAddress, evaluatorABI, wallet);

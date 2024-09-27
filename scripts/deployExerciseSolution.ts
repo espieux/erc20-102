@@ -7,13 +7,13 @@ dotenv.config();
 
 async function main() {
     // Ensure environment variables are set
-    if (!process.env.SEPOLIA_RPC_URL || !process.env.SEPOLIA_PRIVATE_KEY) {
-        throw new Error("Please set your .env variables (SEPOLIA_RPC_URL, SEPOLIA_PRIVATE_KEY)");
+    if (!process.env.ARB_SEPOLIA_URL || !process.env.PRIVATE_KEY) {
+        throw new Error("Please set your .env variables (ARB_SEPOLIA_URL, PRIVATE_KEY)");
     }
 
     // Initialize provider and wallet
-    const provider = new ethers.providers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-    const wallet = new ethers.Wallet(process.env.SEPOLIA_PRIVATE_KEY, provider);
+    const provider = new ethers.providers.JsonRpcProvider(process.env.ARB_SEPOLIA_URL);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // Paths for ABI and bytecode files
     const exerciseSolutionTokenPath = path.join(__dirname, "../artifacts/contracts/ExerciseSolutionToken.sol/ExerciseSolutionToken.json");
@@ -41,7 +41,7 @@ async function main() {
     console.log(`ExerciseSolutionToken deployed to: ${exerciseSolutionTokenContract.address}`);
 
     // Addresses for ERC20 contracts
-    const teacherERC20Address = "0xD829b447AbABDb689C1F6DC81CCe3d29b37c5992";
+    const teacherERC20Address = "0x5ADeBf74a71360Be295534274041ceeD6A39977a";
     const exerciseSolutionTokenAddress = exerciseSolutionTokenContract.address;
 
     // Deploy ExerciseSolution

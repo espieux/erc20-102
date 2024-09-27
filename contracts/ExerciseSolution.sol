@@ -68,6 +68,6 @@ contract ExerciseSolution is IExerciseSolution {
 
     // Return the address of the teacher's ERC20 token contract
     function getERC20DepositAddress() external view override returns (address) {
-        return address(teacherERC20);
+        return address(depositToken);
     }
 }

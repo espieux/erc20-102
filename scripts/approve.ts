@@ -6,17 +6,17 @@ dotenv.config();
 
 async function approveExerciseSolution(): Promise<void> {
     // Ensure environment variables are loaded
-    if (!process.env.SEPOLIA_RPC_URL || !process.env.SEPOLIA_PRIVATE_KEY) {
-        throw new Error("Please set your .env variables (SEPOLIA_RPC_URL, SEPOLIA_PRIVATE_KEY)");
+    if (!process.env.ARB_SEPOLIA_URL || !process.env.PRIVATE_KEY) {
+        throw new Error("Please set your .env variables (ARB_SEPOLIA_URL, PRIVATE_KEY)");
     }
 
     // Set up provider and wallet
-    const provider: ethers.providers.JsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-    const wallet: ethers.Wallet = new ethers.Wallet(process.env.SEPOLIA_PRIVATE_KEY, provider);
+    const provider: ethers.providers.JsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.ARB_SEPOLIA_URL);
+    const wallet: ethers.Wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // ERC20 token address and ExerciseSolution contract address
-    const ERC20_ADDRESS: string = "0xD829b447AbABDb689C1F6DC81CCe3d29b37c5992"; 
-    const EXERCISE_SOLUTION_ADDRESS: string = "0x1455bD34d7e087d17742ba7CA218A7d247A5290e"; 
+    const ERC20_ADDRESS: string = "0x5ADeBf74a71360Be295534274041ceeD6A39977a"; 
+    const EXERCISE_SOLUTION_ADDRESS: string = "0x9B7b44ba3A46A7a28018ca4dC14647466382E4eF"; 
     // ERC20 ABI with only the approve function
     const ERC20_ABI: string[] = [
         "function approve(address spender, uint256 amount) public returns (bool)"
@@ -26,7 +26,7 @@ async function approveExerciseSolution(): Promise<void> {
     const erc20Contract: ethers.Contract = new ethers.Contract(ERC20_ADDRESS, ERC20_ABI, wallet);
 
     // Set amount to approve
-    const amountToApprove: ethers.BigNumber = ethers.utils.parseUnits("0.100002500002300000", 18);
+    const amountToApprove: ethers.BigNumber = ethers.utils.parseUnits("0", 18);
 
     // Approve ExerciseSolution contract to spend tokens
     try {
